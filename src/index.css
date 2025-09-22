@@ -2,41 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* MEGA QUIZ Design System - Inspired by MEGA HELP Raíces
+All colors MUST be HSL - Based on vibrant MEGA HELP brand colors
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* MEGA Brand Colors */
+    --mega-yellow: 45 98% 60%;        /* Vibrant yellow from logo */
+    --mega-blue: 215 100% 25%;        /* Deep blue from poster background */
+    --mega-green: 150 80% 45%;        /* Dynamic green from "Raíces" */
+    --mega-orange: 35 100% 50%;       /* Orange accent from poster */
+    --mega-dark: 0 0% 8%;             /* Deep black for contrast */
+    
+    /* Semantic tokens for light mode */
+    --background: 220 15% 95%;        /* Light blue-grey background */
+    --foreground: 0 0% 8%;            /* MEGA dark for text */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 8%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 45 98% 60%;             /* MEGA Yellow as primary */
+    --primary-foreground: 0 0% 8%;     /* Dark text on yellow */
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 215 100% 25%;         /* MEGA Blue as secondary */
+    --secondary-foreground: 0 0% 100%; /* White text on blue */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --success: 150 80% 45%;            /* MEGA Green for correct answers */
+    --success-foreground: 0 0% 100%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --danger: 0 84% 60%;               /* Red for incorrect answers */
+    --danger-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --muted: 220 15% 90%;
+    --muted-foreground: 0 0% 40%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --accent: 35 100% 50%;             /* MEGA Orange for accents */
+    --accent-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 85%;
+    --input: 0 0% 100%;
+    --ring: 45 98% 60%;                /* MEGA Yellow for focus rings */
+
+    --radius: 12px;
+
+    /* MEGA Effects & Gradients */
+    --gradient-mega: linear-gradient(135deg, hsl(var(--mega-yellow)), hsl(var(--mega-orange)));
+    --gradient-hero: linear-gradient(180deg, hsl(var(--mega-blue)), hsl(215 80% 35%));
+    --gradient-success: linear-gradient(45deg, hsl(var(--success)), hsl(150 70% 50%));
+    --gradient-danger: linear-gradient(45deg, hsl(var(--danger)), hsl(0 90% 65%));
+    
+    /* MEGA Shadows & Glows */
+    --shadow-mega: 0 10px 40px -10px hsl(var(--mega-yellow) / 0.4);
+    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.3);
+    --shadow-card: 0 8px 32px -8px hsl(215 100% 25% / 0.15);
+    
+    /* MEGA Animations */
+    --transition-mega: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --bounce-scale: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +129,119 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image: radial-gradient(circle at 20% 80%, hsl(var(--mega-blue) / 0.03) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, hsl(var(--mega-yellow) / 0.05) 0%, transparent 50%);
   }
+}
+
+/* MEGA Quiz Component Styles */
+@layer components {
+  .mega-title {
+    @apply text-6xl md:text-8xl font-black tracking-tight font-oswald;
+    background: var(--gradient-mega);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 20px hsl(var(--mega-yellow) / 0.3);
+  }
+
+  .mega-button {
+    @apply relative overflow-hidden font-bold text-lg px-8 py-4 rounded-xl;
+    background: var(--gradient-mega);
+    box-shadow: var(--shadow-mega);
+    transition: var(--transition-mega);
+    transform: translateY(0);
+  }
+  
+  .mega-button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 15px 50px -10px hsl(var(--mega-yellow) / 0.5);
+  }
+
+  .mega-button:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .quiz-answer-button {
+    @apply w-full p-6 text-left text-lg font-semibold rounded-xl border-2 border-transparent;
+    background: hsl(var(--card));
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-mega);
+  }
+
+  .quiz-answer-button:hover {
+    transform: translateY(-1px);
+    border-color: hsl(var(--primary));
+    box-shadow: var(--shadow-glow);
+  }
+
+  .answer-correct {
+    background: var(--gradient-success) !important;
+    color: hsl(var(--success-foreground)) !important;
+    animation: pulse-success 0.6s ease-out;
+  }
+
+  .answer-incorrect {
+    background: var(--gradient-danger) !important;
+    color: hsl(var(--danger-foreground)) !important;
+    animation: shake 0.6s ease-out;
+  }
+
+  .glow-effect {
+    position: relative;
+  }
+
+  .glow-effect::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: var(--gradient-mega);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .glow-effect:hover::before {
+    opacity: 0.7;
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+}
+
+/* MEGA Quiz Animations */
+@keyframes pulse-success {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.7; filter: blur(0px); }
+  50% { opacity: 1; filter: blur(2px); }
+}
+
+@keyframes mega-entrance {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.8) translateY(30px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Utility classes */
+.animate-mega-entrance {
+  animation: mega-entrance 0.8s var(--bounce-scale) forwards;
+}
+
+.text-mega-glow {
+  text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
 }
