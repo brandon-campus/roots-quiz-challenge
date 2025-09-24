@@ -58,39 +58,39 @@ const BreakScreen = ({ round, timeRemaining, onBreakEnd }: BreakScreenProps) => 
   const breakInfo = getBreakMessage();
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-3 sm:p-4">
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-mega-blue/5 to-transparent rounded-full animate-pulse"></div>
         <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-l from-mega-yellow/5 to-transparent rounded-full animate-pulse delay-1000"></div>
       </div>
 
-      <Card className="w-full max-w-2xl p-12 text-center bg-card/90 backdrop-blur-sm border-2 border-primary/20 shadow-2xl animate-mega-entrance relative z-10">
+      <Card className="w-full max-w-sm sm:max-w-lg lg:max-w-2xl p-6 sm:p-8 lg:p-12 text-center bg-card/90 backdrop-blur-sm border-2 border-primary/20 shadow-2xl animate-mega-entrance relative z-10">
         {/* Large Emoji */}
-        <div className="text-8xl mb-6 animate-pulse">
+        <div className="text-4xl sm:text-6xl lg:text-8xl mb-4 sm:mb-6 animate-pulse">
           {breakInfo.emoji}
         </div>
 
         {/* Title */}
-        <h1 className="mega-title text-5xl mb-4">
+        <h1 className="mega-title text-2xl sm:text-3xl lg:text-5xl mb-2 sm:mb-4">
           {breakInfo.title}
         </h1>
 
         {/* Subtitle */}
-        <h2 className="text-2xl font-bold text-mega-green mb-6">
+        <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-mega-green mb-4 sm:mb-6">
           {breakInfo.subtitle}
         </h2>
 
         {/* Message */}
-        <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+        <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-6 sm:mb-8 max-w-xs sm:max-w-md mx-auto">
           {breakInfo.message}
         </p>
 
         {/* Timer or Continue Button */}
         {!showContinueButton ? (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Countdown Timer */}
-            <div className="relative mx-auto w-32 h-32">
+            <div className="relative mx-auto w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                 <path
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -108,7 +108,7 @@ const BreakScreen = ({ round, timeRemaining, onBreakEnd }: BreakScreenProps) => 
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold text-primary mb-1">
+                <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary mb-1">
                   {timer}
                 </span>
                 <span className="text-xs text-muted-foreground">
@@ -117,7 +117,7 @@ const BreakScreen = ({ round, timeRemaining, onBreakEnd }: BreakScreenProps) => 
               </div>
             </div>
 
-            <div className="text-muted-foreground">
+            <div className="text-muted-foreground text-sm sm:text-base">
               Esperando para continuar...
             </div>
           </div>
@@ -125,7 +125,7 @@ const BreakScreen = ({ round, timeRemaining, onBreakEnd }: BreakScreenProps) => 
           <div className="animate-mega-entrance">
             <Button
               onClick={handleContinue}
-              className="mega-button text-mega-dark px-12 py-4 text-xl"
+              className="mega-button text-mega-dark px-8 sm:px-10 lg:px-12 py-3 sm:py-4 text-base sm:text-lg lg:text-xl w-full sm:w-auto"
             >
               CONTINUAR
             </Button>
@@ -133,9 +133,9 @@ const BreakScreen = ({ round, timeRemaining, onBreakEnd }: BreakScreenProps) => 
         )}
 
         {/* Decorative elements */}
-        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-primary/20 rounded-full animate-ping"></div>
-        <div className="absolute -bottom-6 left-1/4 w-8 h-8 bg-mega-green/30 rounded-full animate-pulse delay-500"></div>
-        <div className="absolute -bottom-6 right-1/4 w-8 h-8 bg-mega-orange/30 rounded-full animate-pulse delay-1000"></div>
+        <div className="absolute -top-3 sm:-top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 sm:w-12 sm:h-12 bg-primary/20 rounded-full animate-ping"></div>
+        <div className="absolute -bottom-3 sm:-bottom-6 left-1/4 w-6 h-6 sm:w-8 sm:h-8 bg-mega-green/30 rounded-full animate-pulse delay-500"></div>
+        <div className="absolute -bottom-3 sm:-bottom-6 right-1/4 w-6 h-6 sm:w-8 sm:h-8 bg-mega-orange/30 rounded-full animate-pulse delay-1000"></div>
       </Card>
     </div>
   );

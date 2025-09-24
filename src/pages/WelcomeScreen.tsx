@@ -33,32 +33,32 @@ const WelcomeScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-3">
       <div className="absolute inset-0 bg-gradient-to-br from-mega-blue/10 via-transparent to-mega-yellow/10"></div>
       
-      <Card className="w-full max-w-md p-8 backdrop-blur-sm bg-card/80 border-2 border-primary/20 shadow-2xl animate-mega-entrance relative z-10">
+      <Card className="w-full max-w-sm p-4 sm:p-6 md:p-8 backdrop-blur-sm bg-card/80 border-2 border-primary/20 shadow-2xl animate-mega-entrance relative z-10">
         {/* Logo */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-4 sm:mb-6">
           <img 
             src={megaHelpLogo} 
             alt="MEGA HELP Logo" 
-            className="w-32 h-32 object-contain glow-effect"
+            className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain glow-effect"
           />
         </div>
 
         {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="mega-title text-4xl mb-2">MEGA</h1>
-          <h2 className="mega-title text-3xl text-mega-green">QUIZ</h2>
-          <p className="text-muted-foreground mt-4 text-sm">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="mega-title text-2xl sm:text-3xl md:text-4xl mb-1">MEGA</h1>
+          <h2 className="mega-title text-xl sm:text-2xl md:text-3xl text-mega-green">QUIZ</h2>
+          <p className="text-muted-foreground mt-2 sm:mt-4 text-xs sm:text-sm">
             El evento más grande para valorar la vida
           </p>
         </div>
 
         {/* Form */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
-            <label className="text-sm font-semibold text-foreground mb-2 block">
+            <label className="text-xs sm:text-sm font-semibold text-foreground mb-2 block">
               Tu nombre
             </label>
             <Input
@@ -66,17 +66,17 @@ const WelcomeScreen = () => {
               placeholder="Ingresa tu nombre..."
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              className="text-center text-lg font-medium h-12"
+              className="text-center text-base sm:text-lg font-medium h-11 sm:h-12"
             />
           </div>
 
           <div>
-            <label className="text-sm font-semibold text-foreground mb-2 block">
+            <label className="text-xs sm:text-sm font-semibold text-foreground mb-2 block">
               Foto de perfil
             </label>
             <div className="flex flex-col items-center gap-3">
               {playerPhoto && (
-                <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-primary">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-4 border-primary">
                   <img
                     src={URL.createObjectURL(playerPhoto)}
                     alt="Preview"
@@ -88,7 +88,7 @@ const WelcomeScreen = () => {
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoUpload}
-                className="text-center"
+                className="text-center text-sm sm:text-base"
               />
             </div>
           </div>
@@ -96,7 +96,7 @@ const WelcomeScreen = () => {
           <Button
             onClick={handleJoinGame}
             disabled={!playerName.trim()}
-            className="mega-button w-full text-mega-dark"
+            className="mega-button w-full text-mega-dark text-base sm:text-lg"
             size="lg"
           >
             UNIRSE A LA PARTIDA
@@ -104,8 +104,8 @@ const WelcomeScreen = () => {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute -top-4 -right-4 w-8 h-8 bg-primary rounded-full opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-mega-green rounded-full opacity-30 animate-pulse delay-300"></div>
+        <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-full opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-2 -left-2 sm:-bottom-4 sm:-left-4 w-4 h-4 sm:w-6 sm:h-6 bg-mega-green rounded-full opacity-30 animate-pulse delay-300"></div>
       </Card>
     </div>
   );

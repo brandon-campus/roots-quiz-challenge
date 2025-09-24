@@ -164,7 +164,7 @@ All colors MUST be HSL - Based on vibrant MEGA HELP brand colors
   }
 
   .quiz-answer-button {
-    @apply w-full p-6 text-left text-lg font-semibold rounded-xl border-2 border-transparent;
+    @apply w-full p-4 sm:p-5 lg:p-6 text-left text-sm sm:text-base lg:text-lg font-semibold rounded-xl border-2 border-transparent;
     background: hsl(var(--card));
     box-shadow: var(--shadow-card);
     transition: var(--transition-mega);

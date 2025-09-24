@@ -88,26 +88,26 @@ const QuestionScreen = ({
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 flex items-center justify-center">
-      <div className="w-full max-w-4xl">
+    <div className="min-h-screen bg-background p-3 sm:p-4 flex items-center justify-center">
+      <div className="w-full max-w-2xl sm:max-w-3xl lg:max-w-4xl">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="text-left">
-            <h1 className="mega-title text-3xl">MEGA QUIZ</h1>
-            <p className="text-muted-foreground">Round {round} - Pregunta {questionNumber}/{totalQuestions}</p>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 gap-2 sm:gap-0">
+          <div className="text-center sm:text-left">
+            <h1 className="mega-title text-xl sm:text-2xl lg:text-3xl">MEGA QUIZ</h1>
+            <p className="text-muted-foreground text-xs sm:text-sm">Round {round} - Pregunta {questionNumber}/{totalQuestions}</p>
           </div>
           
-          <div className="text-right">
-            <div className="text-2xl font-bold text-primary">{score} puntos</div>
-            <div className={`text-3xl font-bold ${getTimerColor()}`}>
+          <div className="text-center sm:text-right flex sm:flex-col gap-4 sm:gap-0">
+            <div className="text-lg sm:text-xl lg:text-2xl font-bold text-primary">{score} puntos</div>
+            <div className={`text-2xl sm:text-3xl lg:text-3xl font-bold ${getTimerColor()}`}>
               {timer}s
             </div>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+        <div className="mb-4 sm:mb-6">
+          <div className="w-full bg-muted rounded-full h-2 sm:h-3 overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-primary to-mega-yellow transition-all duration-500"
               style={{ width: `${(questionNumber / totalQuestions) * 100}%` }}
@@ -116,27 +116,27 @@ const QuestionScreen = ({
         </div>
 
         {/* Question Card */}
-        <Card className="p-8 mb-8 bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-2xl">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
+        <Card className="p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-2xl">
+          <div className="text-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-foreground leading-tight">
               {question.question}
             </h2>
           </div>
 
           {/* Answer Options */}
-          <div className="grid gap-4">
+          <div className="grid gap-3 sm:gap-4">
             {question.options.map((option, index) => (
               <button
                 key={index}
                 onClick={() => handleAnswerSelect(index)}
                 disabled={showResult}
-                className={getAnswerButtonClass(index)}
+                className={`${getAnswerButtonClass(index)} min-h-[60px] sm:min-h-[70px]`}
               >
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 text-primary font-bold text-lg">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 text-primary font-bold text-base sm:text-lg flex-shrink-0">
                     {String.fromCharCode(65 + index)}
                   </div>
-                  <span className="text-left flex-1">{option}</span>
+                  <span className="text-left flex-1 text-sm sm:text-base lg:text-lg">{option}</span>
                 </div>
               </button>
             ))}
@@ -144,11 +144,11 @@ const QuestionScreen = ({
 
           {/* Submit Button */}
           {!showResult && (
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-6 sm:mt-8">
               <Button
                 onClick={handleSubmitAnswer}
                 disabled={selectedAnswer === null}
-                className="mega-button text-mega-dark px-12 py-4 text-xl"
+                className="mega-button text-mega-dark px-6 sm:px-8 lg:px-12 py-3 sm:py-4 text-base sm:text-lg lg:text-xl w-full sm:w-auto"
               >
                 ENVIAR RESPUESTA
               </Button>
@@ -157,26 +157,26 @@ const QuestionScreen = ({
 
           {/* Result Message */}
           {showResult && (
-            <div className="text-center mt-8">
+            <div className="text-center mt-6 sm:mt-8">
               {playerAnswer === question.correctAnswer ? (
-                <div className="text-success text-2xl font-bold animate-pulse-success">
+                <div className="text-success text-lg sm:text-xl lg:text-2xl font-bold animate-pulse-success">
                   ¡CORRECTO! +100 puntos
                 </div>
               ) : (
-                <div className="text-danger text-2xl font-bold animate-shake">
+                <div className="text-danger text-lg sm:text-xl lg:text-2xl font-bold animate-shake">
                   {playerAnswer === null ? '¡TIEMPO AGOTADO!' : '¡INCORRECTO!'}
                 </div>
               )}
-              <div className="text-muted-foreground mt-2">
+              <div className="text-muted-foreground mt-2 text-sm sm:text-base">
                 La respuesta correcta era: <strong>{question.options[question.correctAnswer]}</strong>
               </div>
             </div>
           )}
         </Card>
 
-        {/* Decorative Timer Ring */}
-        <div className="fixed top-10 right-10">
-          <div className="relative w-20 h-20">
+        {/* Mobile Timer Display - Only visible on small screens */}
+        <div className="flex justify-center sm:hidden mb-4">
+          <div className="relative w-16 h-16">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
               <path
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -194,7 +194,34 @@ const QuestionScreen = ({
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`text-lg font-bold ${getTimerColor()}`}>
+              <span className={`text-sm font-bold ${getTimerColor()}`}>
+                {timer}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Timer Ring - Hidden on mobile */}
+        <div className="fixed top-4 right-4 sm:top-6 sm:right-6 lg:top-10 lg:right-10 hidden sm:block">
+          <div className="relative w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="hsl(var(--muted))"
+                strokeWidth="2"
+              />
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke={timer > 10 ? "hsl(var(--primary))" : timer > 5 ? "hsl(var(--mega-orange))" : "hsl(var(--danger))"}
+                strokeWidth="2"
+                strokeDasharray={`${(timer / 20) * 100}, 100`}
+                className="transition-all duration-1000"
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className={`text-xs sm:text-sm lg:text-lg font-bold ${getTimerColor()}`}>
                 {timer}
               </span>
             </div>
