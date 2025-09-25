@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
+import { createPlayer } from '@/lib/database';
 import megaHelpLogo from '@/assets/mega-help-logo.png';
 
 const WelcomeScreen = () => {
   const [playerName, setPlayerName] = useState('');
   const [playerPhoto, setPlayerPhoto] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,18 +19,27 @@ const WelcomeScreen = () => {
     }
   };
 
-  const handleJoinGame = () => {
-    if (playerName.trim()) {
-      // Here we would normally save to Supabase
-      localStorage.setItem('playerName', playerName);
-      if (playerPhoto) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          localStorage.setItem('playerPhoto', e.target?.result as string);
-        };
-        reader.readAsDataURL(playerPhoto);
+  const handleJoinGame = async () => {
+    if (playerName.trim() && !isLoading) {
+      setIsLoading(true);
+      
+      try {
+        // Crear jugador en la base de datos
+        const player = await createPlayer(playerName, playerPhoto);
+        
+        // Guardar ID del jugador en localStorage para usar en el juego
+        localStorage.setItem('playerId', player.id);
+        localStorage.setItem('playerName', player.name);
+        localStorage.setItem('playerPhoto', player.photo_url || '');
+        
+        // Navegar a la sala de espera
+        navigate('/lobby');
+      } catch (error) {
+        console.error('Error creando jugador:', error);
+        // Aquí podrías mostrar un toast de error
+      } finally {
+        setIsLoading(false);
       }
-      navigate('/quiz');
     }
   };
 
@@ -67,6 +78,7 @@ const WelcomeScreen = () => {
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
               className="text-center text-base sm:text-lg font-medium h-11 sm:h-12"
+              disabled={isLoading}
             />
           </div>
 
@@ -89,17 +101,18 @@ const WelcomeScreen = () => {
                 accept="image/*"
                 onChange={handlePhotoUpload}
                 className="text-center text-sm sm:text-base"
+                disabled={isLoading}
               />
             </div>
           </div>
 
           <Button
             onClick={handleJoinGame}
-            disabled={!playerName.trim()}
+            disabled={!playerName.trim() || isLoading}
             className="mega-button w-full text-mega-dark text-base sm:text-lg"
             size="lg"
           >
-            UNIRSE A LA PARTIDA
+            {isLoading ? 'CREANDO PERFIL...' : 'UNIRSE A LA PARTIDA'}
           </Button>
         </div>
 
