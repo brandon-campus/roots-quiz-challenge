@@ -4,6 +4,8 @@ import QuestionScreen from '@/components/quiz/QuestionScreen';
 import BreakScreen from '@/components/quiz/BreakScreen';
 import { quizData } from '@/data/quizData';
 import { QuizState, GamePhase } from '@/types/quiz';
+import { getActiveGame, savePlayerAnswer, updatePlayerScore, getConnectedPlayers } from '@/lib/database';
+import { supabase } from '@/lib/supabase';
 
 const QuizGame = () => {
   const navigate = useNavigate();
@@ -16,18 +18,100 @@ const QuizGame = () => {
     playerAnswer: null,
     showResult: false
   });
+  const [game, setGame] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Check if player is registered
+  const playerId = localStorage.getItem('playerId');
+  const playerName = localStorage.getItem('playerName');
+
+  // Check if player is registered and load game
   useEffect(() => {
-    const playerName = localStorage.getItem('playerName');
-    if (!playerName) {
+    if (!playerId || !playerName) {
       navigate('/');
+      return;
     }
-  }, [navigate]);
 
-  const handleAnswerSubmit = (answerIndex: number) => {
+    initializeGame();
+    setupRealtimeSubscription();
+  }, [navigate, playerId, playerName]);
+
+  const initializeGame = async () => {
+    try {
+      const activeGame = await getActiveGame();
+      if (!activeGame) {
+        navigate('/lobby');
+        return;
+      }
+      
+      setGame(activeGame);
+      setQuizState(prev => ({
+        ...prev,
+        currentQuestion: activeGame.current_question,
+        phase: activeGame.phase || 'question',
+        timeRemaining: activeGame.time_remaining || 20,
+        round: Math.floor(activeGame.current_question / 5) + 1
+      }));
+    } catch (error) {
+      console.error('Error cargando juego:', error);
+      navigate('/lobby');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const setupRealtimeSubscription = () => {
+    const channel = supabase
+      .channel('quiz-game')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'games' },
+        (payload) => {
+          console.log('Cambio en estado del juego:', payload);
+          if (payload.new) {
+            setGame(payload.new);
+            setQuizState(prev => ({
+              ...prev,
+              currentQuestion: payload.new.current_question,
+              phase: payload.new.phase || 'question',
+              timeRemaining: payload.new.time_remaining || 20,
+              round: Math.floor(payload.new.current_question / 5) + 1
+            }));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  };
+
+  const handleAnswerSubmit = async (answerIndex: number) => {
+    if (!game || !playerId) return;
+    
     const currentQ = quizData[quizState.currentQuestion];
     const isCorrect = answerIndex === currentQ.correctAnswer;
+    const timeTaken = 20 - quizState.timeRemaining; // Tiempo que tardó en responder
+    
+    // Guardar respuesta en la base de datos
+    try {
+      await savePlayerAnswer(
+        game.id,
+        playerId,
+        currentQ.id,
+        answerIndex,
+        isCorrect,
+        timeTaken
+      );
+
+      // Actualizar puntaje del jugador
+      await updatePlayerScore(
+        game.id,
+        playerId,
+        isCorrect ? 100 : 0
+      );
+    } catch (error) {
+      console.error('Error guardando respuesta:', error);
+    }
     
     setQuizState(prev => ({
       ...prev,
@@ -47,8 +131,8 @@ const QuizGame = () => {
       }
 
       // Check if we need a break
-      const shouldBreak = (nextQuestion % 5 === 0) || 
-                         (nextQuestion >= 15); // Last round has breaks after each question
+      const shouldBreak = (nextQuestion % 5 === 0) ||           // Después de cada 5 preguntas (rondas 1 y 2)
+                         (nextQuestion >= 11);                  // Después de cada pregunta en ronda 3
 
       if (shouldBreak) {
         setQuizState(prev => ({
@@ -88,6 +172,28 @@ const QuizGame = () => {
       handleAnswerSubmit(-1); // -1 indicates no answer/time up
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl font-bold mb-2">Cargando juego...</div>
+          <div className="text-muted-foreground">Conectando con la partida</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!game) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl font-bold mb-2">No hay partida activa</div>
+          <div className="text-muted-foreground">Redirigiendo al lobby...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

@@ -1,151 +1,114 @@
 import { Question } from '@/types/quiz';
 
 export const quizData: Question[] = [
-  // Round 1 (Questions 1-5)
+  // Ronda 1 (Questions 1-5)
   {
     id: 1,
-    question: "¿En qué año fue sancionada la primera Constitución Argentina?",
-    options: ["1853", "1810", "1816", "1862"],
-    correctAnswer: 0,
+    question: "¿En qué provincia se realizó la declaración de la Independencia Argentina?",
+    options: ["Rosario", "Córdoba", "Buenos Aires", "Tucumán"],
+    correctAnswer: 3,
     category: "Historia"
   },
   {
     id: 2,
-    question: "¿Cuál es el río más largo de Argentina?",
-    options: ["Río Paraná", "Río de la Plata", "Río Uruguay", "Río Colorado"],
-    correctAnswer: 0,
-    category: "Geografía"
+    question: "¿Cuántos planetas tiene el sistema solar?",
+    options: ["7", "8", "9", "10"],
+    correctAnswer: 1,
+    category: "Ciencia"
   },
   {
     id: 3,
-    question: "¿Quién escribió 'Martín Fierro'?",
-    options: ["Jorge Luis Borges", "José Hernández", "Domingo Sarmiento", "Leopoldo Lugones"],
-    correctAnswer: 1,
-    category: "Literatura"
+    question: "¿En qué año empezó la 1° Guerra mundial?",
+    options: ["1920", "1945", "1916", "1914"],
+    correctAnswer: 3,
+    category: "Historia"
   },
   {
     id: 4,
-    question: "¿En qué provincia se encuentra el Cerro Aconcagua?",
-    options: ["San Juan", "Mendoza", "La Rioja", "Catamarca"],
-    correctAnswer: 1,
-    category: "Geografía"
+    question: "¿Quién fue el primer presidente Argentino?",
+    options: ["Juan M de Rosas", "Justo José de Urquiza", "José Luis Borges", "Bernardino Rivadavia"],
+    correctAnswer: 3,
+    category: "Historia"
   },
   {
     id: 5,
-    question: "¿Cuál es la capital de la provincia de Tucumán?",
-    options: ["San Miguel de Tucumán", "Tafí Viejo", "Concepción", "Banda del Río Salí"],
+    question: "¿Cuál es la fórmula del cloruro de Magnesio?",
+    options: ["ClMg", "MgCl2", "Cmg3", "MgC"],
+    correctAnswer: 1,
+    category: "Química"
+  },
+
+  // Ronda 2 (Questions 6-10)
+  {
+    id: 6,
+    question: "Según el proverbio 29 ¿A quién odian los hombres sanguinarios?",
+    options: ["Al Justo", "Al hombre intachable", "Al sabio", "Al envidioso"],
+    correctAnswer: 1,
+    category: "Biblia"
+  },
+  {
+    id: 7,
+    question: "¿Cuál es la fecha de aniversario de la Iglesia Universal del Reino de Dios?",
+    options: ["9 de junio", "8 de marzo", "9 de julio", "8 de junio"],
+    correctAnswer: 2,
+    category: "Religión"
+  },
+  {
+    id: 8,
+    question: "¿Cuáles son los estados del agua?",
+    options: ["Gaseoso, líquido", "Líquido, sólido", "Sólido, líquido, gaseoso", "Líquido, gaseoso y plasma"],
+    correctAnswer: 2,
+    category: "Ciencia"
+  },
+  {
+    id: 9,
+    question: "¿Cuántos países contempla América del Sur?",
+    options: ["12", "13", "7", "20"],
     correctAnswer: 0,
     category: "Geografía"
   },
-
-  // Round 2 (Questions 6-10)
   {
-    id: 6,
-    question: "¿En qué año se celebró el primer Mundial de Fútbol en Argentina?",
+    id: 10,
+    question: "¿Cuál es la unidad básica de la materia?",
+    options: ["Átomo", "Molécula", "Célula", "Elemento"],
+    correctAnswer: 0,
+    category: "Ciencia"
+  },
+
+  // Ronda 3 (Questions 11-15) - Ronda de tensión máxima
+  {
+    id: 11,
+    question: "¿Si un auto viaja a una velocidad constante de 60 km/h cuanto tiempo le llevara recorrer 120 km?",
+    options: ["1h30", "2 h", "1 h", "3 h"],
+    correctAnswer: 1,
+    category: "Matemáticas"
+  },
+  {
+    id: 12,
+    question: "¿En qué año gano Argentina su 1 copa del mundo?",
     options: ["1974", "1978", "1982", "1986"],
     correctAnswer: 1,
     category: "Deportes"
   },
   {
-    id: 7,
-    question: "¿Cuál es el nombre del himno nacional argentino?",
-    options: ["Himno Nacional Argentino", "Canción Patria", "Marcha de la Patria", "Oíd mortales"],
-    correctAnswer: 0,
-    category: "Historia"
-  },
-  {
-    id: 8,
-    question: "¿Qué significa la palabra 'Argentina'?",
-    options: ["Tierra del fuego", "Plateada", "Hermosa", "Grande"],
-    correctAnswer: 1,
-    category: "Historia"
-  },
-  {
-    id: 9,
-    question: "¿Cuál es la danza nacional de Argentina?",
-    options: ["Tango", "Zamba", "Pericón", "Chacarera"],
-    correctAnswer: 0,
-    category: "Cultura"
-  },
-  {
-    id: 10,
-    question: "¿En qué año se declaró la Independencia de Argentina?",
-    options: ["1810", "1816", "1820", "1825"],
-    correctAnswer: 1,
-    category: "Historia"
-  },
-
-  // Round 3 (Questions 11-15)
-  {
-    id: 11,
-    question: "¿Cuál es el plato típico argentino más conocido mundialmente?",
-    options: ["Empanadas", "Asado", "Milanesas", "Locro"],
-    correctAnswer: 1,
-    category: "Gastronomía"
-  },
-  {
-    id: 12,
-    question: "¿Quién fue el primer presidente de Argentina?",
-    options: ["Juan Domingo Perón", "Bernardino Rivadavia", "Bartolomé Mitre", "Domingo Sarmiento"],
-    correctAnswer: 1,
-    category: "Historia"
-  },
-  {
     id: 13,
-    question: "¿Cuál es la moneda oficial de Argentina?",
-    options: ["Peso argentino", "Austral", "Peso convertible", "Real"],
-    correctAnswer: 0,
-    category: "Economía"
+    question: "¿Cuántos libros tiene el Antiguo testamento?",
+    options: ["27", "49", "47", "28"],
+    correctAnswer: 1,
+    category: "Biblia"
   },
   {
     id: 14,
-    question: "¿En qué océano se encuentra Argentina?",
-    options: ["Océano Pacífico", "Océano Atlántico", "Océano Índico", "Mar Mediterráneo"],
-    correctAnswer: 1,
-    category: "Geografía"
+    question: "En la física ¿A que hace referencia las siglas MRUV?",
+    options: ["Movimiento Recto Universalmente Vivo", "Movimiento Rectilíneo Uniforme Vivo", "Movimiento rectilíneo uniforme vacío", "Movimiento rectilíneo uniformemente variado"],
+    correctAnswer: 3,
+    category: "Física"
   },
   {
     id: 15,
-    question: "¿Cuál es el ave nacional de Argentina?",
-    options: ["Cóndor", "Hornero", "Carancho", "Benteveo"],
+    question: "¿Cuál es el día de la prevención en contra el suicidio?",
+    options: ["28 de septiembre", "10 de septiembre", "11 de septiembre", "3 de septiembre"],
     correctAnswer: 1,
-    category: "Naturaleza"
-  },
-
-  // Round 4 - Final Round (Questions 16-20)
-  {
-    id: 16,
-    question: "¿Cuántas provincias tiene Argentina?",
-    options: ["22", "23", "24", "25"],
-    correctAnswer: 1,
-    category: "Geografía"
-  },
-  {
-    id: 17,
-    question: "¿Qué científico argentino ganó el Premio Nobel de Medicina en 1984?",
-    options: ["César Milstein", "Luis Federico Leloir", "Bernardo Houssay", "Carlos Saavedra Lamas"],
-    correctAnswer: 0,
-    category: "Ciencia"
-  },
-  {
-    id: 18,
-    question: "¿En qué año fue creada la Universidad de Córdoba?",
-    options: ["1613", "1621", "1634", "1640"],
-    correctAnswer: 0,
-    category: "Historia"
-  },
-  {
-    id: 19,
-    question: "¿Cuál es el parque nacional más antiguo de Argentina?",
-    options: ["Nahuel Huapi", "Iguazú", "Los Glaciares", "Tierra del Fuego"],
-    correctAnswer: 0,
-    category: "Naturaleza"
-  },
-  {
-    id: 20,
-    question: "¿Qué escritor argentino ganó el Premio Nobel de Literatura?",
-    options: ["Jorge Luis Borges", "Julio Cortázar", "Adolfo Bioy Casares", "Ninguno de los anteriores"],
-    correctAnswer: 3,
-    category: "Literatura"
+    category: "Salud"
   }
 ];

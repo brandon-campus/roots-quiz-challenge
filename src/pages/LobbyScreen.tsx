@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { createGame, joinGame } from '@/lib/database';
+import { createGame, joinGame, updatePlayerCount } from '@/lib/database';
 import { supabase } from '@/lib/supabase';
 
 const LobbyScreen = () => {
@@ -28,22 +28,27 @@ const LobbyScreen = () => {
 
   const initializeGame = async () => {
     try {
-      // Buscar si ya existe una partida activa
-      const { data: existingGame } = await supabase
+      // Buscar si ya existe una partida en estado 'waiting' o 'active'
+      const { data: existingGames } = await supabase
         .from('games')
         .select('*')
-        .eq('status', 'waiting')
-        .single();
+        .in('status', ['waiting', 'active'])
+        .order('created_at', { ascending: false })
+        .limit(1);
 
       let gameId;
-      if (existingGame) {
+      if (existingGames && existingGames.length > 0) {
+        // Usar la partida existente más reciente
+        const existingGame = existingGames[0];
         gameId = existingGame.id;
         setGame(existingGame);
+        console.log('Usando partida existente:', existingGame.id);
       } else {
-        // Crear nueva partida
+        // Crear nueva partida solo si no existe ninguna
         const newGame = await createGame();
         gameId = newGame.id;
         setGame(newGame);
+        console.log('Creando nueva partida:', newGame.id);
       }
 
       // Unir jugador a la partida
@@ -66,18 +71,21 @@ const LobbyScreen = () => {
       .eq('game_id', gameId)
       .eq('status', 'active');
 
+    console.log('Jugadores cargados para partida', gameId, ':', data);
     setPlayers(data || []);
   };
 
   const setupRealtimeSubscription = () => {
     const channel = supabase
-      .channel('game-updates')
+      .channel('lobby-updates')
       .on('postgres_changes', 
         { event: '*', schema: 'public', table: 'game_sessions' },
         (payload) => {
           console.log('Cambio en game_sessions:', payload);
           if (game) {
             loadPlayers(game.id);
+            // Actualizar contador de jugadores
+            updatePlayerCount(game.id);
           }
         }
       )
@@ -85,7 +93,8 @@ const LobbyScreen = () => {
         { event: '*', schema: 'public', table: 'games' },
         (payload) => {
           console.log('Cambio en games:', payload);
-          if (payload.new.status === 'active') {
+          setGame(payload.new);
+          if (payload.new && (payload.new as any).status === 'active') {
             navigate('/quiz');
           }
         }
