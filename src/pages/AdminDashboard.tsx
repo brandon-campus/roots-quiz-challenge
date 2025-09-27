@@ -7,6 +7,15 @@ import { getActiveGame, getLatestGame, getPlayerRanking, getConnectedPlayers, up
 import { supabase } from '@/lib/supabase';
 
 const AdminDashboard = () => {
+  // Función para calcular el número de ronda según la nueva estructura
+  const getRoundNumber = (questionIndex: number): number => {
+    if (questionIndex < 6) return 1;        // Preguntas 1-6: Ronda 1
+    if (questionIndex < 12) return 2;       // Preguntas 7-12: Ronda 2
+    if (questionIndex === 12) return 3;     // Pregunta 13: Ronda 3
+    if (questionIndex === 13) return 4;     // Pregunta 14: Ronda 4
+    if (questionIndex === 14) return 5;     // Pregunta 15: Ronda 5 (Final)
+    return 1; // Default
+  };
   const [game, setGame] = useState(null);
   const [players, setPlayers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -198,7 +207,7 @@ const AdminDashboard = () => {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Pregunta {game.current_question + 1} de 15</span>
-              <span>Ronda {Math.floor(game.current_question / 5) + 1}</span>
+              <span>Ronda {getRoundNumber(game.current_question)}</span>
             </div>
             <Progress value={(game.current_question / 15) * 100} className="h-2" />
                 </div>

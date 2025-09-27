@@ -7,6 +7,16 @@ import { QuizState, GamePhase } from '@/types/quiz';
 import { getActiveGame, savePlayerAnswer, updatePlayerScore, getConnectedPlayers } from '@/lib/database';
 import { supabase } from '@/lib/supabase';
 
+// Función para calcular el número de ronda según la nueva estructura
+const getRoundNumber = (questionIndex: number): number => {
+  if (questionIndex < 6) return 1;        // Preguntas 1-6: Ronda 1
+  if (questionIndex < 12) return 2;       // Preguntas 7-12: Ronda 2
+  if (questionIndex === 12) return 3;     // Pregunta 13: Ronda 3
+  if (questionIndex === 13) return 4;     // Pregunta 14: Ronda 4
+  if (questionIndex === 14) return 5;     // Pregunta 15: Ronda 5 (Final)
+  return 1; // Default
+};
+
 const QuizGame = () => {
   const navigate = useNavigate();
   const [quizState, setQuizState] = useState<QuizState>({
@@ -49,7 +59,7 @@ const QuizGame = () => {
         currentQuestion: activeGame.current_question,
         phase: activeGame.phase || 'question',
         timeRemaining: activeGame.time_remaining || 20,
-        round: Math.floor(activeGame.current_question / 5) + 1
+        round: getRoundNumber(activeGame.current_question)
       }));
     } catch (error) {
       console.error('Error cargando juego:', error);
@@ -73,7 +83,7 @@ const QuizGame = () => {
               currentQuestion: payload.new.current_question,
               phase: payload.new.phase || 'question',
               timeRemaining: payload.new.time_remaining || 20,
-              round: Math.floor(payload.new.current_question / 5) + 1
+              round: getRoundNumber(payload.new.current_question)
             }));
           }
         }
@@ -131,8 +141,10 @@ const QuizGame = () => {
       }
 
       // Check if we need a break
-      const shouldBreak = (nextQuestion % 5 === 0) ||           // Después de cada 5 preguntas (rondas 1 y 2)
-                         (nextQuestion >= 11);                  // Después de cada pregunta en ronda 3
+      const shouldBreak = (nextQuestion === 6) ||               // Después de 6 preguntas (primera ronda)
+                         (nextQuestion === 12) ||               // Después de 12 preguntas (segunda ronda)
+                         (nextQuestion === 13) ||               // Después de pregunta 13
+                         (nextQuestion === 14);                 // Después de pregunta 14
 
       if (shouldBreak) {
         setQuizState(prev => ({
@@ -150,7 +162,7 @@ const QuizGame = () => {
           timeRemaining: 20,
           playerAnswer: null,
           showResult: false,
-          round: Math.floor(nextQuestion / 5) + 1
+          round: getRoundNumber(nextQuestion)
         }));
       }
     }, 3000);
@@ -163,7 +175,7 @@ const QuizGame = () => {
       currentQuestion: nextQuestion,
       phase: 'question',
       timeRemaining: 20,
-      round: Math.floor(nextQuestion / 5) + 1
+      round: getRoundNumber(nextQuestion)
     }));
   };
 
