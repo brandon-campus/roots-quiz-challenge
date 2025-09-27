@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QuestionScreen from '@/components/quiz/QuestionScreen';
 import BreakScreen from '@/components/quiz/BreakScreen';
-import { quizData } from '@/data/quizData';
+import { getQuestionsForGame, getQuestionByOrder } from '@/lib/seedQuestions';
 import { QuizState, GamePhase } from '@/types/quiz';
 import { getActiveGame, savePlayerAnswer, updatePlayerScore, getConnectedPlayers } from '@/lib/database';
 import { supabase } from '@/lib/supabase';
@@ -29,6 +29,7 @@ const QuizGame = () => {
     showResult: false
   });
   const [game, setGame] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const playerId = localStorage.getItem('playerId');
@@ -54,6 +55,42 @@ const QuizGame = () => {
       }
       
       setGame(activeGame);
+      
+      // Cargar preguntas desde la base de datos
+      console.log('Cargando preguntas para el juego:', activeGame.id);
+      console.log('Estado del juego:', activeGame);
+      
+      try {
+        const gameQuestions = await getQuestionsForGame(activeGame.id);
+        
+        if (!gameQuestions || gameQuestions.length === 0) {
+          console.error('No se encontraron preguntas para el juego:', activeGame.id);
+          console.log('Intentando esperar un momento para que se creen las preguntas...');
+          
+          // Esperar 2 segundos y reintentar (el trigger puede tardar un poco)
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          const retryQuestions = await getQuestionsForGame(activeGame.id);
+          
+          if (!retryQuestions || retryQuestions.length === 0) {
+            console.error('Segundo intento fallido. No hay preguntas disponibles.');
+            alert('Error: No se encontraron preguntas para este juego. El trigger automático puede no estar funcionando. Verifica la configuración de la base de datos.');
+            navigate('/lobby');
+            return;
+          }
+          
+          console.log('Preguntas encontradas en segundo intento:', retryQuestions.length);
+          setQuestions(retryQuestions);
+        } else {
+          console.log('Preguntas cargadas exitosamente:', gameQuestions.length);
+          setQuestions(gameQuestions);
+        }
+      } catch (questionError) {
+        console.error('Error cargando preguntas:', questionError);
+        alert('Error de conexión al cargar preguntas. Verifica tu conexión y la configuración de Supabase.');
+        navigate('/lobby');
+        return;
+      }
+      
       setQuizState(prev => ({
         ...prev,
         currentQuestion: activeGame.current_question,
@@ -96,10 +133,14 @@ const QuizGame = () => {
   };
 
   const handleAnswerSubmit = async (answerIndex: number) => {
-    if (!game || !playerId) return;
+    if (!game || !playerId || !questions || questions.length === 0) return;
     
-    const currentQ = quizData[quizState.currentQuestion];
-    const isCorrect = answerIndex === currentQ.correctAnswer;
+    const currentQ = questions[quizState.currentQuestion];
+    if (!currentQ) {
+      console.error('Pregunta no encontrada en el índice:', quizState.currentQuestion);
+      return;
+    }
+    const isCorrect = answerIndex === currentQ.correct_answer;
     const timeTaken = 20 - quizState.timeRemaining; // Tiempo que tardó en responder
     
     // Guardar respuesta en la base de datos
@@ -134,7 +175,7 @@ const QuizGame = () => {
     setTimeout(() => {
       const nextQuestion = quizState.currentQuestion + 1;
       
-      if (nextQuestion >= quizData.length) {
+      if (nextQuestion >= questions.length) {
         // Quiz finished
         navigate('/');
         return;
@@ -207,13 +248,36 @@ const QuizGame = () => {
     );
   }
 
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl font-bold mb-2">Cargando preguntas...</div>
+          <div className="text-muted-foreground">Preparando el quiz</div>
+        </div>
+      </div>
+    );
+  }
+
+  const currentQuestion = questions[quizState.currentQuestion];
+  if (!currentQuestion && quizState.phase === 'question') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl font-bold mb-2">Error en pregunta</div>
+          <div className="text-muted-foreground">No se pudo cargar la pregunta actual</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {quizState.phase === 'question' ? (
         <QuestionScreen
-          question={quizData[quizState.currentQuestion]}
+          question={currentQuestion}
           questionNumber={quizState.currentQuestion + 1}
-          totalQuestions={quizData.length}
+          totalQuestions={questions.length}
           timeRemaining={quizState.timeRemaining}
           score={quizState.score}
           round={quizState.round}

@@ -70,11 +70,11 @@ const QuestionScreen = ({
         : 'quiz-answer-button';
     }
     
-    if (index === question.correctAnswer) {
+    if (index === question.correct_answer) {
       return 'answer-correct';
     }
     
-    if (playerAnswer === index && index !== question.correctAnswer) {
+    if (playerAnswer === index && index !== question.correct_answer) {
       return 'answer-incorrect';
     }
     
@@ -118,8 +118,8 @@ const QuestionScreen = ({
         {/* Question Card */}
         <Card className="p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-2xl">
           <div className="text-center mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-foreground leading-tight">
-              {question.question}
+              <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-foreground leading-tight">
+              {question.question_text}
             </h2>
           </div>
 
@@ -158,7 +158,7 @@ const QuestionScreen = ({
           {/* Result Message */}
           {showResult && (
             <div className="text-center mt-6 sm:mt-8">
-              {playerAnswer === question.correctAnswer ? (
+              {playerAnswer === question.correct_answer ? (
                 <div className="text-success text-lg sm:text-xl lg:text-2xl font-bold animate-pulse-success">
                   ¡CORRECTO! +100 puntos
                 </div>
@@ -168,7 +168,7 @@ const QuestionScreen = ({
                 </div>
               )}
               <div className="text-muted-foreground mt-2 text-sm sm:text-base">
-                La respuesta correcta era: <strong>{question.options[question.correctAnswer]}</strong>
+                La respuesta correcta era: <strong>{question.options[question.correct_answer]}</strong>
               </div>
             </div>
           )}

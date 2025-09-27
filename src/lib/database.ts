@@ -144,7 +144,9 @@ export const getActiveGame = async () => {
     .from('games')
     .select('*')
     .eq('status', 'active')
-    .single();
+    .order('created_at', { ascending: false })  // Más reciente primero
+    .limit(1)                                   // Solo uno
+    .single();                                  // Ahora sí puede usar .single()
   
   if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
     console.error('Error obteniendo partida activa:', error);

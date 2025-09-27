@@ -1,9 +1,11 @@
 export interface Question {
   id: number;
-  question: string;
+  question_text: string;
   options: string[];
-  correctAnswer: number;
+  correct_answer: number;
   category?: string;
+  order_index: number;
+  game_id: string;
 }
 
 export type GamePhase = 'question' | 'break' | 'result';
