@@ -213,14 +213,37 @@ export const savePlayerAnswer = async (gameId: string, playerId: string, questio
 
 // Actualizar puntaje del jugador
 export const updatePlayerScore = async (gameId: string, playerId: string, scoreChange: number) => {
+  // Primero obtener el puntaje actual del jugador
+  const { data: currentScore, error: fetchError } = await supabase
+    .from('player_scores')
+    .select('*')
+    .eq('game_id', gameId)
+    .eq('player_id', playerId)
+    .single();
+  
+  if (fetchError && fetchError.code !== 'PGRST116') {
+    console.error('Error obteniendo puntaje actual:', fetchError);
+    throw fetchError;
+  }
+  
+  // Calcular nuevos valores
+  const currentTotalScore = currentScore?.total_score || 0;
+  const currentQuestionsAnswered = currentScore?.questions_answered || 0;
+  const currentCorrectAnswers = currentScore?.correct_answers || 0;
+  
+  const newTotalScore = currentTotalScore + scoreChange;
+  const newQuestionsAnswered = currentQuestionsAnswered + 1;
+  const newCorrectAnswers = currentCorrectAnswers + (scoreChange > 0 ? 1 : 0);
+  
+  // Actualizar o insertar el nuevo puntaje
   const { data, error } = await supabase
     .from('player_scores')
     .upsert([{
       game_id: gameId,
       player_id: playerId,
-      total_score: scoreChange,
-      questions_answered: 1,
-      correct_answers: scoreChange > 0 ? 1 : 0
+      total_score: newTotalScore,
+      questions_answered: newQuestionsAnswered,
+      correct_answers: newCorrectAnswers
     }], {
       onConflict: 'game_id,player_id'
     })
