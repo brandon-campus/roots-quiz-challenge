@@ -93,7 +93,7 @@ export const quizData: Question[] = [
   {
     id: 13,
     question: "¿Cuántos libros tiene el Antiguo testamento?",
-    options: ["27", "49", "47", "28"],
+    options: ["27", "39", "47", "28"],
     correctAnswer: 1,
     category: "Biblia"
   },
