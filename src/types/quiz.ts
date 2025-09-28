@@ -15,7 +15,6 @@ export interface QuizState {
   score: number;
   round: number;
   phase: GamePhase;
-  timeRemaining: number;
   playerAnswer: number | null;
   showResult: boolean;
 }

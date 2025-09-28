@@ -24,7 +24,6 @@ const QuizGame = () => {
     score: 0,
     round: 1,
     phase: 'question' as GamePhase,
-    timeRemaining: 20,
     playerAnswer: null,
     showResult: false
   });
@@ -95,7 +94,6 @@ const QuizGame = () => {
         ...prev,
         currentQuestion: activeGame.current_question,
         phase: activeGame.phase || 'question',
-        timeRemaining: activeGame.time_remaining || 20,
         round: getRoundNumber(activeGame.current_question)
       }));
     } catch (error) {
@@ -119,7 +117,6 @@ const QuizGame = () => {
               ...prev,
               currentQuestion: payload.new.current_question,
               phase: payload.new.phase || 'question',
-              timeRemaining: payload.new.time_remaining || 20,
               round: getRoundNumber(payload.new.current_question)
             }));
           }
@@ -141,7 +138,7 @@ const QuizGame = () => {
       return;
     }
     const isCorrect = answerIndex === currentQ.correct_answer;
-    const timeTaken = 20 - quizState.timeRemaining; // Tiempo que tardó en responder
+    const timeTaken = 0; // Sin temporizador
     
     // Guardar respuesta en la base de datos
     try {
@@ -191,7 +188,6 @@ const QuizGame = () => {
         setQuizState(prev => ({
           ...prev,
           phase: 'break',
-          timeRemaining: 60,
           playerAnswer: null,
           showResult: false
         }));
@@ -200,7 +196,6 @@ const QuizGame = () => {
           ...prev,
           currentQuestion: nextQuestion,
           phase: 'question',
-          timeRemaining: 20,
           playerAnswer: null,
           showResult: false,
           round: getRoundNumber(nextQuestion)
@@ -215,16 +210,10 @@ const QuizGame = () => {
       ...prev,
       currentQuestion: nextQuestion,
       phase: 'question',
-      timeRemaining: 20,
       round: getRoundNumber(nextQuestion)
     }));
   };
 
-  const handleTimeUp = () => {
-    if (quizState.phase === 'question' && !quizState.showResult) {
-      handleAnswerSubmit(-1); // -1 indicates no answer/time up
-    }
-  };
 
   if (isLoading) {
     return (
@@ -278,18 +267,15 @@ const QuizGame = () => {
           question={currentQuestion}
           questionNumber={quizState.currentQuestion + 1}
           totalQuestions={questions.length}
-          timeRemaining={quizState.timeRemaining}
           score={quizState.score}
           round={quizState.round}
           playerAnswer={quizState.playerAnswer}
           showResult={quizState.showResult}
           onAnswerSubmit={handleAnswerSubmit}
-          onTimeUp={handleTimeUp}
         />
       ) : (
         <BreakScreen
           round={quizState.round}
-          timeRemaining={quizState.timeRemaining}
           onBreakEnd={handleBreakEnd}
         />
       )}

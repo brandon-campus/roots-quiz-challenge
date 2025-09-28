@@ -7,49 +7,24 @@ interface QuestionScreenProps {
   question: Question;
   questionNumber: number;
   totalQuestions: number;
-  timeRemaining: number;
   score: number;
   round: number;
   playerAnswer: number | null;
   showResult: boolean;
   onAnswerSubmit: (answerIndex: number) => void;
-  onTimeUp: () => void;
 }
 
 const QuestionScreen = ({
   question,
   questionNumber,
   totalQuestions,
-  timeRemaining,
   score,
   round,
   playerAnswer,
   showResult,
-  onAnswerSubmit,
-  onTimeUp
+  onAnswerSubmit
 }: QuestionScreenProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [timer, setTimer] = useState(timeRemaining);
-
-  useEffect(() => {
-    setTimer(timeRemaining);
-  }, [timeRemaining]);
-
-  useEffect(() => {
-    if (!showResult && timer > 0) {
-      const interval = setInterval(() => {
-        setTimer(prev => {
-          if (prev <= 1) {
-            onTimeUp();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [timer, showResult, onTimeUp]);
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (!showResult) {
@@ -81,11 +56,6 @@ const QuestionScreen = ({
     return 'quiz-answer-button opacity-50';
   };
 
-  const getTimerColor = () => {
-    if (timer > 10) return 'text-primary';
-    if (timer > 5) return 'text-mega-orange';
-    return 'text-danger';
-  };
 
   return (
     <div className="min-h-screen bg-background p-3 sm:p-4 flex items-center justify-center">
@@ -97,11 +67,8 @@ const QuestionScreen = ({
             <p className="text-muted-foreground text-xs sm:text-sm">Round {round} - Pregunta {questionNumber}/{totalQuestions}</p>
           </div>
           
-          <div className="text-center sm:text-right flex sm:flex-col gap-4 sm:gap-0">
+          <div className="text-center sm:text-right">
             <div className="text-lg sm:text-xl lg:text-2xl font-bold text-primary">{score} puntos</div>
-            <div className={`text-2xl sm:text-3xl lg:text-3xl font-bold ${getTimerColor()}`}>
-              {timer}s
-            </div>
           </div>
         </div>
 
@@ -174,59 +141,7 @@ const QuestionScreen = ({
           )}
         </Card>
 
-        {/* Mobile Timer Display - Only visible on small screens */}
-        <div className="flex justify-center sm:hidden mb-4">
-          <div className="relative w-16 h-16">
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-              <path
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none"
-                stroke="hsl(var(--muted))"
-                strokeWidth="2"
-              />
-              <path
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none"
-                stroke={timer > 10 ? "hsl(var(--primary))" : timer > 5 ? "hsl(var(--mega-orange))" : "hsl(var(--danger))"}
-                strokeWidth="2"
-                strokeDasharray={`${(timer / 20) * 100}, 100`}
-                className="transition-all duration-1000"
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`text-sm font-bold ${getTimerColor()}`}>
-                {timer}
-              </span>
-            </div>
-          </div>
-        </div>
 
-        {/* Desktop Timer Ring - Hidden on mobile */}
-        <div className="fixed top-4 right-4 sm:top-6 sm:right-6 lg:top-10 lg:right-10 hidden sm:block">
-          <div className="relative w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20">
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-              <path
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none"
-                stroke="hsl(var(--muted))"
-                strokeWidth="2"
-              />
-              <path
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none"
-                stroke={timer > 10 ? "hsl(var(--primary))" : timer > 5 ? "hsl(var(--mega-orange))" : "hsl(var(--danger))"}
-                strokeWidth="2"
-                strokeDasharray={`${(timer / 20) * 100}, 100`}
-                className="transition-all duration-1000"
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`text-xs sm:text-sm lg:text-lg font-bold ${getTimerColor()}`}>
-                {timer}
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

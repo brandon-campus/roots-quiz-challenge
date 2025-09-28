@@ -4,34 +4,10 @@ import { Card } from '@/components/ui/card';
 
 interface BreakScreenProps {
   round: number;
-  timeRemaining: number;
   onBreakEnd: () => void;
 }
 
-const BreakScreen = ({ round, timeRemaining, onBreakEnd }: BreakScreenProps) => {
-  const [timer, setTimer] = useState(timeRemaining);
-  const [showContinueButton, setShowContinueButton] = useState(false);
-
-  useEffect(() => {
-    setTimer(timeRemaining);
-    setShowContinueButton(false);
-  }, [timeRemaining]);
-
-  useEffect(() => {
-    if (timer > 0) {
-      const interval = setInterval(() => {
-        setTimer(prev => {
-          if (prev <= 1) {
-            setShowContinueButton(true);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [timer]);
+const BreakScreen = ({ round, onBreakEnd }: BreakScreenProps) => {
 
   const handleContinue = () => {
     onBreakEnd();
@@ -86,51 +62,15 @@ const BreakScreen = ({ round, timeRemaining, onBreakEnd }: BreakScreenProps) => 
           {breakInfo.message}
         </p>
 
-        {/* Timer or Continue Button */}
-        {!showContinueButton ? (
-          <div className="space-y-4 sm:space-y-6">
-            {/* Countdown Timer */}
-            <div className="relative mx-auto w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32">
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                <path
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="hsl(var(--muted))"
-                  strokeWidth="3"
-                />
-                <path
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  fill="none"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth="3"
-                  strokeDasharray={`${(timer / 60) * 100}, 100`}
-                  className="transition-all duration-1000"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary mb-1">
-                  {timer}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  segundos
-                </span>
-              </div>
-            </div>
-
-            <div className="text-muted-foreground text-sm sm:text-base">
-              Esperando para continuar...
-            </div>
-          </div>
-        ) : (
-          <div className="animate-mega-entrance">
-            <Button
-              onClick={handleContinue}
-              className="mega-button text-mega-dark px-8 sm:px-10 lg:px-12 py-3 sm:py-4 text-base sm:text-lg lg:text-xl w-full sm:w-auto"
-            >
-              CONTINUAR
-            </Button>
-          </div>
-        )}
+        {/* Continue Button */}
+        <div className="animate-mega-entrance">
+          <Button
+            onClick={handleContinue}
+            className="mega-button text-mega-dark px-8 sm:px-10 lg:px-12 py-3 sm:py-4 text-base sm:text-lg lg:text-xl w-full sm:w-auto"
+          >
+            CONTINUAR
+          </Button>
+        </div>
 
         {/* Decorative elements */}
         <div className="absolute -top-3 sm:-top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 sm:w-12 sm:h-12 bg-primary/20 rounded-full animate-ping"></div>

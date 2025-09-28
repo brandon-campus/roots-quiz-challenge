@@ -6,7 +6,6 @@ interface GameContextType {
   game: any;
   currentQuestion: number;
   phase: 'question' | 'break' | 'result';
-  timeRemaining: number;
   isLoading: boolean;
   updateGame: (updates: any) => Promise<void>;
 }
@@ -66,7 +65,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     game,
     currentQuestion: game?.current_question || 0,
     phase: game?.phase || 'question',
-    timeRemaining: game?.time_remaining || 20,
     isLoading,
     updateGame
   };
